@@ -1,0 +1,50 @@
+{
+  "name": "gestionnaire-projets",
+  "version": "1.1.0",
+  "description": "Gestionnaire de Projets BTP — MELLAH Abd Errahmane",
+  "main": "main.js",
+  "author": "MELLAH Abd Errahmane <a.mellah.22000@gmail.com>",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start":  "electron .",
+    "build":  "electron-builder --win --x64 --publish never",
+    "build-portable": "electron-builder --win portable --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron":         "^29.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "build": {
+    "appId":       "dz.sba.gestionnaire-projets",
+    "productName": "Gestionnaire Projets",
+    "copyright":   "© 2025 MELLAH Abd Errahmane",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "build-resources/**/*"
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis",     "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ],
+      "icon": "build-resources/icon.ico"
+    },
+    "portable": {
+      "artifactName": "Gestionnaire-Projets-Portable-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick":           false,
+      "allowToChangeInstallationDirectory": true,
+      "installerLanguages": ["fr_FR"],
+      "language":           "1036",
+      "warningsAsErrors":   false,
+      "artifactName":       "Gestionnaire-Projets-Setup-${version}.${ext}"
+    }
+  }
+}

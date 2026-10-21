@@ -1,0 +1,39 @@
+name: Build Windows EXE
+
+# Compilation de test : à chaque push sur main (ou à la demande).
+# Pour publier une vraie version téléchargeable, utilisez un tag (voir release.yml).
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:        # bouton "Run workflow" dans l'onglet Actions
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Windows EXE
+        run: npm run build
+
+      # Seul l'installeur est conservé, 1 jour : évite de saturer le quota
+      # de stockage des artifacts GitHub.
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: gestionnaire-projets-setup
+          path: dist/Gestionnaire-Projets-Setup-*.exe
+          retention-days: 1
+          if-no-files-found: error

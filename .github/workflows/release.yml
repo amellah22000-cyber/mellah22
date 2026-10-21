@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'    # se déclenche sur v1.1.0, v1.2.0, etc.
+
+permissions:
+  contents: write   # nécessaire pour créer la Release et y joindre les .exe
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Windows EXE
+        run: npm run build
+
+      # Les .exe sont attachés à la Release (n'utilise pas le quota des artifacts)
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Gestionnaire Projets ${{ github.ref_name }}"
+          body: |
+            ## 📦 Gestionnaire de Projets BTP — ${{ github.ref_name }}
+
+            ### Téléchargement
+            - **`Gestionnaire-Projets-Setup-*.exe`** → Installeur (recommandé)
+            - **`Gestionnaire-Projets-Portable-*.exe`** → Version portable (sans installation)
+
+            ### Nouveautés
+            - Choix du scanner et numérisation directe (PDF / JPG / PNG, résolution, couleur)
+            - Bouton « 🖨️ Scanner » dans les documents de projet et les factures fournisseur
+            - Fichier scanné classé automatiquement dans le bon dossier
+          files: |
+            dist/Gestionnaire-Projets-Setup-*.exe
+            dist/Gestionnaire-Projets-Portable-*.exe
+          draft: false
+          prerelease: false
